@@ -1,44 +1,26 @@
 class SensorsController < ApplicationController
-  before_action :set_sensor, only: [:show, :edit, :update, :destroy]
+
+  include MosquittoHelper
 
   def index
     @sensors = Sensor.all
+    if is_mosquitto_installed? && !Rails.application.config.mosquitto_is_running
+      mosquitto_sub = MosquittoSub.create(channel: "sensores")
+      mosquitto_sub.subscribe
+      Rails.application.config.mosquitto_is_running = true
+    end
   end
 
   def statistics
   end
 
-  def show
-  end
-
-  def new
-    @sensor = Sensor.new
-  end
-
-  def edit
-  end
-
-  def create
-    @sensor = Sensor.new(sensor_params)
-
-    respond_to do |format|
-      if @sensor.save
-        format.html { redirect_to @sensor, notice: 'Sensor was successfully created.' }
-        format.json { render :show, status: :created, location: @sensor }
-      else
-        format.html { render :new }
-        format.json { render json: @sensor.errors, status: :unprocessable_entity }
-      end
-    end
-  end
-
   private
 
-    def set_sensor
-      @sensor = Sensor.find(params[:id])
-    end
+  def set_sensor
+    @sensor = Sensor.find(params[:id])
+  end
 
-    def sensor_params
-      params.require(:sensor).permit(:name, :value)
-    end
+  def sensor_params
+    params.require(:sensor).permit(:name, :value)
+  end
 end
