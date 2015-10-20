@@ -1,5 +1,7 @@
 class SensorsController < ApplicationController
 
+  respond_to :json
+
   include MosquittoHelper
 
   def index
@@ -8,6 +10,13 @@ class SensorsController < ApplicationController
       mosquitto_sub = MosquittoSub.create(channel: "sensores")
       mosquitto_sub.subscribe
       Rails.application.config.mosquitto_is_running = true
+    end
+  end
+
+  def graph
+    respond_to do |format|
+      format.js {}
+      format.json {render json: {"x" => [0,1], "y" => [0,1]}}
     end
   end
 

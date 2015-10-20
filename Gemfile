@@ -41,4 +41,3 @@ gem 'spring',        group: :development
 gem "therubyracer"
 gem "twitter-bootstrap-rails"
 gem "less-rails"
-gem 'whenever', :require => false
