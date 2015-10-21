@@ -14,9 +14,13 @@ class SensorsController < ApplicationController
   end
 
   def graph
+    @graph = Graph.new
+    @graph.populate_graph_values
+    @graph.save!
     respond_to do |format|
       format.js {}
-      format.json {render json: {"x" => [0,1], "y" => [0,1]}}
+      format.json {render json: {"x" => @graph.x_coordinates, 
+                                 "y" => @graph.y_coordinates}}
     end
   end
 
