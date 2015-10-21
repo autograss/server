@@ -3,9 +3,13 @@ class SensorsController < ApplicationController
   respond_to :json
 
   include MosquittoHelper
+  include SensorsHelper
 
   def index
     @sensors = Sensor.all
+    @graph = Graph.new
+    initialize_data @graph
+    @graph.save!
     if is_mosquitto_installed? && !Rails.application.config.mosquitto_is_running
       mosquitto_sub = MosquittoSub.create(channel: "sensores")
       mosquitto_sub.subscribe
@@ -14,13 +18,10 @@ class SensorsController < ApplicationController
   end
 
   def graph
-    @graph = Graph.new
-    @graph.populate_graph_values
-    @graph.save!
     respond_to do |format|
       format.js {}
-      format.json {render json: {"x" => @graph.x_coordinates, 
-                                 "y" => @graph.y_coordinates}}
+      format.json {render json: {"x" => Graph.last.x_coordinates, 
+                                 "y" => Graph.last.y_coordinates}}
     end
   end
 
@@ -35,5 +36,9 @@ class SensorsController < ApplicationController
 
   def sensor_params
     params.require(:sensor).permit(:name, :value)
+  end
+
+  def graph_params
+    params.require(:graph).permit(:x_coordinates, :y_coordinates)
   end
 end
