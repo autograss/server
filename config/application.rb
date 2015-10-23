@@ -21,11 +21,14 @@ module AutograssUserInterface
     # config.i18n.default_locale = :de
     config.after_initialize do
       include SensorsHelper
+      default_graph = Graph.new
+      initialize_data default_graph
+      default_graph.save!
       Thread.new do
         loop do
           graph = Graph.last
           initialize_data graph
-          sleep(10)
+          sleep(2)
         end
       end
     end

@@ -7,9 +7,6 @@ class SensorsController < ApplicationController
 
   def index
     @sensors = Sensor.all
-    @graph = Graph.new
-    initialize_data @graph
-    @graph.save!
     if is_mosquitto_installed? && !Rails.application.config.mosquitto_is_running
       mosquitto_sub = MosquittoSub.create(channel: "sensores")
       mosquitto_sub.subscribe
@@ -18,10 +15,12 @@ class SensorsController < ApplicationController
   end
 
   def graph
+    obj = Graph.last
+    graphData = []
+    graphData = format_graph_data_to_ajax(obj.x_coordinates, obj.y_coordinates)
     respond_to do |format|
       format.js {}
-      format.json {render json: {"x" => Graph.last.x_coordinates, 
-                                 "y" => Graph.last.y_coordinates}}
+      format.json {render json: {'data' => graphData}}
     end
   end
 
@@ -41,4 +40,13 @@ class SensorsController < ApplicationController
   def graph_params
     params.require(:graph).permit(:x_coordinates, :y_coordinates)
   end
+
+  def format_graph_data_to_ajax x_points,y_points
+    data = []
+    y_points.each_with_index do |y,index|
+      data << [x_points[index],y]
+    end
+    data
+  end
+
 end
