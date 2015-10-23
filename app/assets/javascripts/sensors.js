@@ -1,5 +1,8 @@
-var p1 = []
-var p2 = []
+var graphData = []
+tmp_list = []
+var firstPlot = 0
+var interval = 5000
+var plotObj = new Object
 
 var graphAjax = function()
 {
@@ -7,24 +10,15 @@ var graphAjax = function()
     url: "sensors/graph", 
     success: function(data) 
     {
-      $.each(data, function(key,value) 
-          {
-            if (key == 'x') { 
-              p1.push(value[0]) 
-                p2.push(value[1]) 
-            }
-            if (key == 'y') { 
-              p1.push(value[0]) 
-                p2.push(value[1]) 
-            }
-          });
-    }}).done(function() {
-    alert("p1:" + p1);
-    alert("p2:" + p2);
-    $.plot($("#placeholder"),[[p1, p2]]);
+      graphData = data["data"]
+    },
+    complete: function (data) {
+      setTimeout(graphAjax,interval);
+    }
+    }).done(function() {
+      plotObj = $.plot($("#placeholder"),[graphData]);
+    }
   });
 }
-$(document).ready(function (){
-  graphAjax();
-});
 
+setTimeout(graphAjax,interval);
