@@ -17,8 +17,7 @@ var graphAjax = function()
     }
     }).done(function() {
       plotObj = $.plot($("#placeholder"),[graphData]);
-    }
-  });
+    });
 }
 
 setTimeout(graphAjax,interval);
