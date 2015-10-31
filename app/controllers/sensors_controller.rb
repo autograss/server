@@ -3,7 +3,6 @@ class SensorsController < ApplicationController
   respond_to :json
 
   include MosquittoHelper
-  include SensorsHelper
 
   def index
     @sensors = Sensor.all

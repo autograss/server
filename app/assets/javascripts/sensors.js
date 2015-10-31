@@ -20,4 +20,9 @@ var graphAjax = function()
     });
 }
 
-setTimeout(graphAjax,interval);
+
+$(document).ready(function() {
+  $("#initiate_monitoring").click(function (){
+    setTimeout(graphAjax,interval);
+  });
+});
