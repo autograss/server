@@ -20,20 +20,9 @@ module AutograssUserInterface
     # config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}').to_s]
     # config.i18n.default_locale = :de
     config.after_initialize do
-      include SensorsHelper
-      y_coordinate = IO.read("#{Rails.root}/graph_values/value").to_f
       graph = Graph.new( y_coordinates: [0], x_coordinates: [1])
       graph.save!
-
-      temporary_coordinates = [y_coordinate]
-      Thread.new do
-        loop do
-          updated_coordinate = graph.retrive_topics_data temporary_coordinates
-          temporary_coordinates = updated_coordinate
-          graph.save! if temporary_coordinates.empty?
-          sleep(1)
-        end
-      end
+      graph.read_topics
     end
   end
 end
