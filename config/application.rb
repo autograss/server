@@ -8,10 +8,5 @@ Bundler.require(*Rails.groups)
 
 module AutograssUserInterface
   class Application < Rails::Application
-    config.after_initialize do
-      graph = Graph.new( y_coordinates: [0], x_coordinates: [1])
-      graph.save!
-      graph.read_topics
-    end
   end
 end

@@ -20,9 +20,21 @@ var graphAjax = function()
     });
 }
 
+var initiateMonitor = function()
+{
+  $.ajax({
+    type: "POST",
+    url: "sensors/monitor",
+    success: function(data)
+    {
+      alert("Initializing Monitor");
+    }
+  });
+}
 
 $(document).ready(function() {
   $("#initiate_monitoring").click(function (){
+    initiateMonitor();
     setTimeout(graphAjax,interval);
   });
 });

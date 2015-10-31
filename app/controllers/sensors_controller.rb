@@ -23,6 +23,13 @@ class SensorsController < ApplicationController
     end
   end
 
+  def monitor
+    graph = Graph.new( y_coordinates: [0], x_coordinates: [1])
+    graph.save!
+    graph.read_topics
+    render nothing: true
+  end
+
   def statistics
   end
 
