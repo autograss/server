@@ -21,8 +21,13 @@ class SensorsController < ApplicationController
   def monitor
     graph = Graph.new(y_coordinates: [0],
                       x_coordinates: [1])
-
+    mosquitto = Mosquitto.new
+    mosquitto.read_config_data
+    mosquitto.save!
+    mosquitto.run
     graph.save!
+    graph.run_mosquitto
+    graph.create_topics_dir
     graph.read_topics
     render nothing: true
   end
@@ -46,6 +51,11 @@ class SensorsController < ApplicationController
                                   :name)
   end
 
+  def mosquitto_params
+    params.require(:graph).permit(:host,
+                                  :port,
+                                  :topic)
+  end
   def format_graph_data_to_ajax x_points,y_points
     data = []
     unless y_points.blank?

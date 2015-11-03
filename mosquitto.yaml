@@ -1,0 +1,7 @@
+port: 13000
+host: '172.16.5.201'
+topics:
+  - humidity
+  - velocity
+
+

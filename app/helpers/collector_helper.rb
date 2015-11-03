@@ -16,6 +16,13 @@ module CollectorHelper
        end
      end
    end
+
+   def create_topics_dir
+     path = topic_path.slice! name
+     unless Dir.exist? path
+       Dir.mkdir(path)
+     end
+   end
   
   def topic_file_exists?
    return File.exist?(topic_path)
